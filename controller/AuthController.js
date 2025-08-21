@@ -54,7 +54,7 @@ module.exports.CreatePermissionAction = async (req, res) => {
 
         await model.save()
         console.log("Saved Successfully");
-        return res.redirect('view-role');
+        return res.redirect('view-permission');
     } catch (err) {
         console.log(err)
     }
