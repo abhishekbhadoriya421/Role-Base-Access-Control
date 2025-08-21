@@ -70,3 +70,27 @@ module.exports.RoleMapAction = async (req, res) => {
         'roles': roles
     });
 }
+
+
+module.exports.CreateRoleMapAction = async (req, res) => {
+    const { permission_id, role_id } = req.body
+    try {
+        const model = new RolePermissionMap();
+
+        model.permission_id = permission_id
+        model.role_id = role_id
+        await model.save()
+        console.log('Role Map Saved Successfully');
+        return res.status(200).redirect('view-role-permission-map')
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+module.exports.ViewRolePermissionMap = async (req, res) => {
+    const model = await RolePermissionMap.find().populate('permission_id').populate('role_id');
+    return res.status(200).render('auth/view-role-permission-map', {
+        'rolePermissions': model
+    });
+}
