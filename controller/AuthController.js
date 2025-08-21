@@ -60,3 +60,13 @@ module.exports.CreatePermissionAction = async (req, res) => {
     }
 
 }
+
+
+module.exports.RoleMapAction = async (req, res) => {
+    const roles = await Role.find();
+    const permission = await Permission.find();
+    return res.status(200).render('auth/role-map-form', {
+        'permissions': permission,
+        'roles': roles
+    });
+}
