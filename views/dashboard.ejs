@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <div>
+        <% if (success_msg.length>0) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= success_msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+                <% if (error_msg.length>0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <% } %>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h1>User Management</h1>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="/task-management/view-task-list" class="btn btn-primary" target="_blank">View Task</a>
+                    <a href="/user/add-user" class="btn btn-primary me-3">Add User</a>
+                    <% if(login_status===false) { %>
+                        <a href="/auth/login" class="btn btn-secondary me-3"
+                            id="loginbtn">LogIn</a>
+                        <% } else { %>
+                            <a href="/auth/log-out" class="btn btn-secondary me-3"
+                                id="logout">LogOut</a>
+                            <div class="mt-2">
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    <%= user.user_name %>
+                                </span>
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <% if(userModel.length <=0) { %>
+                <h1>No User Found</h1>
+                <%} else {%>
+
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>User Name</th>
+                                <th>User Email</th>
+                                <th>Employee ID</th>
+                                <th>Mobile Number</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% userModel.forEach((model,index)=>{
+                                const created_at_date = new Date(model.created_at * 1000).toLocaleString();
+                                %>
+                                <tr>
+                                    <td>
+                                        <%= ++index %>
+                                    </td>
+                                    <td>
+                                        <%= model.user_name %>
+                                    </td>
+                                    <td>
+                                        <%= model.user_email %>
+                                    </td>
+                                    <td>
+                                        <%= model.employee_id %>
+                                    </td>
+                                    <td>
+                                        <%= model.mobile_number %>
+                                    </td>
+                                    <td>
+                                        <%= model.status %>
+                                    </td>
+                                    <td>
+                                        <%= created_at_date %>
+                                    </td>
+                                    <td><a href="/user/update-user-form?id=<%= model.id %>"
+                                            class="btn btn-warning">Update User</a>
+                                        <a href="/user/delete-user?id=<%= model.id %>"
+                                            class="btn btn-danger">Delete User</a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+
+                    <% } %>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
