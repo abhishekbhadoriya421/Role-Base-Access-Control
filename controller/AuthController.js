@@ -1,6 +1,8 @@
 const Role = require('../models/Role.js');
 const RolePermissionMap = require('../models/RolePermissionMap.js');
 const Permission = require('../models/Permission.js');
+const CoreUser = require('../models/CoreUser.js');
+const Memberships = require('../models/Memberships .js');
 
 module.exports.AddRoleFormAction = async (req, res) => {
     return res.status(200).render('auth/add-role-form');
@@ -88,9 +90,20 @@ module.exports.CreateRoleMapAction = async (req, res) => {
 
 }
 
-module.exports.ViewRolePermissionMap = async (req, res) => {
+module.exports.ViewRolePermissionMapAction = async (req, res) => {
     const model = await RolePermissionMap.find().populate('permission_id').populate('role_id');
     return res.status(200).render('auth/view-role-permission-map', {
         'rolePermissions': model
+    });
+}
+
+
+module.exports.AssignUserRoleFormAction = async (req, res) => {
+    const roles = await Role.find();
+    const users = await CoreUser.find();
+
+    return res.render('auth/assign-user-role-form.ejs', {
+        'users': users,
+        'roles': roles
     });
 }
