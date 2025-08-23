@@ -2,6 +2,7 @@ const Router = require('express').Router();
 const { AddRoleFormAction, CreateRoleAction, ViewRolesAction,
     AddPermissionForm, ViewPermissionAction, CreatePermissionAction,
     RoleMapAction, CreateRoleMapAction, ViewRolePermissionMapAction, AssignUserRoleFormAction,
+    AssignUserRoleAction
 } = require('../controller/AuthController.js');
 
 // Get
@@ -16,6 +17,7 @@ Router.get('/assign-user-role-form', AssignUserRoleFormAction);
 Router.post('/create-role', CreateRoleAction);
 Router.post('/create-permission', CreatePermissionAction);
 Router.post('/create-role-permissions', CreateRoleMapAction);
+Router.post('/assign-user-role', AssignUserRoleAction);
 
 
 

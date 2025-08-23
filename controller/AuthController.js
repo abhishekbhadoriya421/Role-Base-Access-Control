@@ -107,3 +107,23 @@ module.exports.AssignUserRoleFormAction = async (req, res) => {
         'roles': roles
     });
 }
+
+
+module.exports.AssignUserRoleAction = async (req, res) => {
+    const { role_id, user_id } = req.body;
+    if (!role_id || !user_id) {
+        console.log('Role and user must select');
+        return res.redirect('assign-user-role-form');
+    }
+
+    try {
+        const model = new Memberships();
+        model.user_id = user_id;
+        model.role_id = role_id;
+        await model.save();
+        console.log('Successfully saved');
+    } catch (err) {
+        console.log(err)
+    }
+
+}
