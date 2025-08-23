@@ -19,7 +19,7 @@ exports.AddUserAction = async (req, res) => {
 exports.CreateUserAction = async (req, res) => {
   if (req.method === "POST") {
     try {
-      const { user_name, user_email, employee_id, mobile_number, status } = req.body;
+      const { user_name, user_email, employee_id, mobile_number, status, role_id } = req.body;
       const model = new CoreUser();
       model.user_name = user_name;
       model.user_email = user_email;

@@ -14,7 +14,7 @@ Router.get('/dashboard', UserAuthCheckWithJWT, DashboardAction);
 
 
 //Router
-Router.use('/user', CheckAdminUserTypeMiddleware, userRouter);
+Router.use('/user', UserAuthCheckWithJWT, userRouter);
 Router.use('/auth', authRouter);
 Router.use('/task-management', UserAuthCheckWithJWT, taskManagementRouter);
 Router.use('/role-permission', authRolePermissionMapRouter);

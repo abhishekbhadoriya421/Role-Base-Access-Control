@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const MembershipsSchema = mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'CoreUser',
+        ref: 'LoginUser',
         required: true
     },
     role_id: {

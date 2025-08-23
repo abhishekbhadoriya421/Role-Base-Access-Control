@@ -6,11 +6,6 @@ const LoginUserSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    user_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        unique: true
-    },
     user_email: {
         type: String,
         required: true,

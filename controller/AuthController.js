@@ -1,7 +1,7 @@
 const Role = require('../models/Role.js');
 const RolePermissionMap = require('../models/RolePermissionMap.js');
 const Permission = require('../models/Permission.js');
-const CoreUser = require('../models/CoreUser.js');
+const LoginUser = require('../models/LoginUser.js');
 const Memberships = require('../models/Memberships .js');
 
 module.exports.AddRoleFormAction = async (req, res) => {
@@ -53,7 +53,6 @@ module.exports.CreatePermissionAction = async (req, res) => {
         const model = new Permission();
         model.name = name;
         model.description = description;
-
         await model.save()
         console.log("Saved Successfully");
         return res.redirect('view-permission');
@@ -100,7 +99,7 @@ module.exports.ViewRolePermissionMapAction = async (req, res) => {
 
 module.exports.AssignUserRoleFormAction = async (req, res) => {
     const roles = await Role.find().lean();
-    const users = await CoreUser.find().lean();
+    const users = await LoginUser.find().lean();
 
     return res.render('auth/assign-user-role-form.ejs', {
         'users': users,
@@ -132,7 +131,6 @@ module.exports.AssignUserRoleAction = async (req, res) => {
 
 module.exports.ViewUserRoleAssignedListAction = async (req, res) => {
     const membership = await Memberships.find().populate('user_id').populate('role_id').lean();
-    console.log(membership)
     return res.status(200).render('auth/view-user-role-assigned-list', {
         'membership': membership
     });

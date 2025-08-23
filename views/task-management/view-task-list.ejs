@@ -48,7 +48,7 @@
               </tr>
             </thead>
             <tbody>
-              <% taskList.forEach((task, index)=> { %>
+              <% if(taskList.length>0) { taskList.forEach((task, index)=> { %>
                 <tr>
                   <td>
                     <%= index + 1 %>
@@ -83,7 +83,7 @@
                       onclick="return confirm('Are you sure?')">Delete</a>
                   </td>
                 </tr>
-                <% }) %>
+                <% }) }%>
             </tbody>
           </table>
         </div>
