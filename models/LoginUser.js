@@ -6,6 +6,11 @@ const LoginUserSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        unique: true
+    },
     user_email: {
         type: String,
         required: true,
@@ -25,16 +30,9 @@ const LoginUserSchema = mongoose.Schema({
             message: props => `${props.value} is not a valid mobile number!`
         }
     },
-
-    user_type: {
-        type: String,
-        required: true,
-        enum: ['admin', 'user'],
-        default: 'user'
-    },
     created_at: {
         type: String,
         default: Date.now()
     }
-});
+}, { timestamps: true });
 module.exports = mongoose.model('LoginUser', LoginUserSchema);

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const MembershipsSchema = mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Organization',
+        ref: 'CoreUser',
         required: true
     },
     role_id: {
@@ -11,7 +11,7 @@ const MembershipsSchema = mongoose.Schema({
         ref: 'Role',
         required: true
     }
-});
+}, { timestamps: true });
 
 MembershipsSchema.index({ user_id: 1, role_id: 1 }, { unique: true });
 

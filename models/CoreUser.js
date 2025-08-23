@@ -28,6 +28,6 @@ const CoreUserSchema = mongoose.Schema({
         type: String,
         default: Date.now()
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('CoreUser', CoreUserSchema);
