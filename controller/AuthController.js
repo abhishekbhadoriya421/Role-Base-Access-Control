@@ -9,7 +9,7 @@ module.exports.AddRoleFormAction = async (req, res) => {
 }
 
 module.exports.ViewRolesAction = async (req, res) => {
-    const roles = await Role.find();
+    const roles = await Role.find().lean();
 
     return res.status(200).render('auth/view-role', {
         'roles': roles
@@ -39,7 +39,7 @@ module.exports.AddPermissionForm = async (req, res) => {
 }
 
 module.exports.ViewPermissionAction = async (req, res) => {
-    const roles = await Permission.find();
+    const roles = await Permission.find().lean();
 
     return res.status(200).render('auth/view-role', {
         'roles': roles
@@ -65,8 +65,8 @@ module.exports.CreatePermissionAction = async (req, res) => {
 
 
 module.exports.RoleMapAction = async (req, res) => {
-    const roles = await Role.find();
-    const permission = await Permission.find();
+    const roles = await Role.find().lean();
+    const permission = await Permission.find().lean();
     return res.status(200).render('auth/role-map-form', {
         'permissions': permission,
         'roles': roles
@@ -91,7 +91,7 @@ module.exports.CreateRoleMapAction = async (req, res) => {
 }
 
 module.exports.ViewRolePermissionMapAction = async (req, res) => {
-    const model = await RolePermissionMap.find().populate('permission_id').populate('role_id');
+    const model = await RolePermissionMap.find().populate('permission_id').populate('role_id').lean();
     return res.status(200).render('auth/view-role-permission-map', {
         'rolePermissions': model
     });
@@ -99,8 +99,8 @@ module.exports.ViewRolePermissionMapAction = async (req, res) => {
 
 
 module.exports.AssignUserRoleFormAction = async (req, res) => {
-    const roles = await Role.find();
-    const users = await CoreUser.find();
+    const roles = await Role.find().lean();
+    const users = await CoreUser.find().lean();
 
     return res.render('auth/assign-user-role-form.ejs', {
         'users': users,
@@ -122,8 +122,18 @@ module.exports.AssignUserRoleAction = async (req, res) => {
         model.role_id = role_id;
         await model.save();
         console.log('Successfully saved');
+        return res.redirect('view-user-role-assigned-list');
     } catch (err) {
         console.log(err)
     }
 
+}
+
+
+module.exports.ViewUserRoleAssignedListAction = async (req, res) => {
+    const membership = await Memberships.find().populate('user_id').populate('role_id').lean();
+    console.log(membership)
+    return res.status(200).render('auth/view-user-role-assigned-list', {
+        'membership': membership
+    });
 }
