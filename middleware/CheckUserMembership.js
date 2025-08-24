@@ -27,8 +27,11 @@ const VerifyUserMemebership = async (req, res, next) => {
         role_ids = membershipCache[user_id];
     }
 
-    const requestedUrl = req.originalUrl;
+    const requestedUrl = req.baseUrl + req.path;
     const permissionObjectId = await Permission.findOne({ name: requestedUrl }).select('_id').lean();
+    if (!permissionObjectId) {
+        return res.redirect(referer || '/');
+    }
     let authrizedUser = false;
     for (const roleId of role_ids) {
         if (!rolePermissionMapCache[roleId]) {
