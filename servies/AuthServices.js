@@ -6,7 +6,6 @@ const RefreshTokens = [];
 module.exports.Generate_JWT_Token = (req, user) => {
     if (!req || !user) {
         throw new Error('Request and user must be provided to generate JWT token');
-        return;
     }
 
     /**
@@ -18,7 +17,6 @@ module.exports.Generate_JWT_Token = (req, user) => {
         {
             id: user._id,
             user_name: user.user_name,
-            user_type: user.user_type,
         },
         process.env.JWT_SECRET_KEY, // Use the secret key from environment variables
         { expiresIn: '1h' }

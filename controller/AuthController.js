@@ -2,7 +2,7 @@ const Role = require('../models/Role.js');
 const RolePermissionMap = require('../models/RolePermissionMap.js');
 const Permission = require('../models/Permission.js');
 const LoginUser = require('../models/LoginUser.js');
-const Memberships = require('../models/Memberships .js');
+const Memberships = require('../models/Memberships.js');
 
 module.exports.AddRoleFormAction = async (req, res) => {
     return res.status(200).render('auth/add-role-form');
