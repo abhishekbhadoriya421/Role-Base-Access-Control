@@ -8,11 +8,14 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const { FlashMiddleware } = require('./middleware/flashMessageMiddleware');
 const cookieParser = require('cookie-parser');
+const { connectRedis } = require('./config/redis');
 
 app.use(cookieParser());
 
 
 connectDb();
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // to handle form data
@@ -42,6 +45,10 @@ app.use('/', routerIndex);
 app.use((req, res, next) => {
     return res.render('pageNotFound');
 });
-app.listen(port, () => {
-    console.log(`server is running on port ${port}`);
-});
+
+(async () => {
+    await connectRedis()
+    app.listen(port, () => {
+        console.log(`server is running on port ${port}`);
+    });
+})()
