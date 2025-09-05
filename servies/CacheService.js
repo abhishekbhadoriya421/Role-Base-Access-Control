@@ -18,7 +18,7 @@ const getCache = async (key) => {
     try {
         const value = await redisClient.get(key);
         if (value) {
-            return JSON.paras(value);
+            return JSON.parse(value);
         } else {
             return false;
         }

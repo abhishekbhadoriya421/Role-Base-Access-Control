@@ -40,43 +40,68 @@ const VerifyUserMemebership = async (req, res, next) => {
     // }
 
     /**
-     * cache data using redis
+     * cache data using redis (Get user role if saved in cache fetch from cache else make db query)
      */
-
-    let roleIds = await CacheService.getCache(user_id);
-    console.log("get from redis ", roleIds)
+    let userIdPrefix = 'user_id';
+    let roleIds = await CacheService.getCache(`${userIdPrefix}:${user_id}`);
     if (!roleIds) {
-        console.log("Role Id not found");
         const modelId = await Memberships.distinct('role_id', { user_id: user_id }).lean();
         if (!modelId) { console.log("You don't have assigned any role"); return res.redirect(referer || '/'); }
-        roleIds = await CacheService.setCache(user_id, modelId, 3600);
-        console.log("Role Id Has been Set : ", roleIds);
+        roleIds = await CacheService.setCache(`${userIdPrefix}:${user_id}`, modelId, 3600);
     }
+
     /**
      * get permission id from requested url if cached fetch from there else fetch from db
      */
-    let permissionObjectId = null
-    const requestedUrl = req.baseUrl + req.path;
-    if (!permissionIdsCaches[requestedUrl]) {
-        permissionObjectId = await Permission.findOne({ name: requestedUrl }).select('_id').lean();
-        if (!permissionObjectId) {
-            return res.redirect(referer || '/');
-        }
-        permissionIdsCaches[requestedUrl] = permissionObjectId;
-    } else {
-        permissionObjectId = permissionIdsCaches[requestedUrl];
-    }
+    // let permissionObjectId = null
+    // const requestedUrl = req.baseUrl + req.path;
+    // if (!permissionIdsCaches[requestedUrl]) {
+    //     permissionObjectId = await Permission.findOne({ name: requestedUrl }).select('_id').lean();
+    //     if (!permissionObjectId) {
+    //         return res.redirect(referer || '/');
+    //     }
+    //     permissionIdsCaches[requestedUrl] = permissionObjectId;
+    // } else {
+    //     permissionObjectId = permissionIdsCaches[requestedUrl];
+    // }
 
+    let requestUrlPrefix = `request_url`;
+    const requestedUrl = req.baseUrl + req.path;
+    let permissionObjectId = await CacheService.getCache(`${requestUrlPrefix}:${requestedUrl}`);
+    if (!permissionObjectId) {
+        const permissionId = await Permission.findOne({ name: requestedUrl }).select('_id').lean();
+        if (!permissionId) { console.log("permission model not found"); return res.redirect(referer || '/'); }
+        permissionObjectId = await CacheService.setCache(`${requestUrlPrefix}:${requestedUrl}`, permissionId, 3600);
+    }
+    console.log(permissionObjectId)
     /**
      * check if user is authorized to visit the request page  
      */
+    // let authorizedUser = false;
+    // for (const roleId of roleIds) {
+    //     if (!rolePermissionMapCache[roleId]) {
+    //         const permissions = await RolePermissionMap.distinct('permission_id', { role_id: roleId }).lean();
+    //         rolePermissionMapCache[roleId] = permissions.map(p => p.toString());
+    //     }
+    //     if (rolePermissionMapCache[roleId].includes(permissionObjectId._id.toString())) {
+    //         authorizedUser = true;
+    //         break;
+    //     }
+    // }
+
     let authorizedUser = false;
+    let roleIdPrefix = 'role_id';
     for (const roleId of roleIds) {
-        if (!rolePermissionMapCache[roleId]) {
+        let roleAndPermissionMap = await CacheService.getCache(`${roleIdPrefix}:${roleId}`);
+        if (!roleAndPermissionMap) {
             const permissions = await RolePermissionMap.distinct('permission_id', { role_id: roleId }).lean();
-            rolePermissionMapCache[roleId] = permissions.map(p => p.toString());
+            let tempPermissions = permissions.map(p => p.toString());
+            console.log("this: ", tempPermissions);
+            roleAndPermissionMap = await CacheService.setCache(`${roleIdPrefix}:${roleId}`, tempPermissions, 3600);
         }
-        if (rolePermissionMapCache[roleId].includes(permissionObjectId._id.toString())) {
+
+        console.log("roleAndPermissionMap: " + roleAndPermissionMap);
+        if (roleAndPermissionMap.includes(permissionObjectId._id.toString())) {
             authorizedUser = true;
             break;
         }
