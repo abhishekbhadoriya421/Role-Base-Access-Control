@@ -15,6 +15,9 @@ const VerifyUserMemebership = async (req, res, next) => {
     if (!req.cookies || !req.cookies.access_token || !req.cookies.access_token.token) {
         return res.redirect('/auth/login');
     }
+    /**
+     * Validate Token and user authentication 
+     */
     const token = req.cookies.access_token.token;
     if (!token) {
         req.flash('error_msg', 'Please login to continue');
@@ -23,6 +26,10 @@ const VerifyUserMemebership = async (req, res, next) => {
     const decoded = Verify_JWT_Token(token);
     const user_id = decoded.id
     let role_ids = [];
+
+    /**
+     * Get user role if saved in cache fetch from cache else make db query
+     */
     if (!membershipCache[user_id]) {
         const membershipModel = await Memberships.distinct('role_id', { user_id: user_id }).lean();
         role_ids = membershipModel;
@@ -30,6 +37,10 @@ const VerifyUserMemebership = async (req, res, next) => {
     } else {
         role_ids = membershipCache[user_id];
     }
+
+    /**
+     * get permission id from requested url if cached fetch from there else fetch from db
+     */
     let permissionObjectId = null
     const requestedUrl = req.baseUrl + req.path;
     if (!permissionIdsCaches[requestedUrl]) {
@@ -42,21 +53,22 @@ const VerifyUserMemebership = async (req, res, next) => {
         permissionObjectId = permissionIdsCaches[requestedUrl];
     }
 
-    console.log(permissionObjectId)
-
-    let authrizedUser = false;
+    /**
+     * check if user is authorized to visit the request page  
+     */
+    let authorizedUser = false;
     for (const roleId of role_ids) {
         if (!rolePermissionMapCache[roleId]) {
             const permissions = await RolePermissionMap.distinct('permission_id', { role_id: roleId }).lean();
             rolePermissionMapCache[roleId] = permissions.map(p => p.toString());
         }
         if (rolePermissionMapCache[roleId].includes(permissionObjectId._id.toString())) {
-            authrizedUser = true;
+            authorizedUser = true;
             break;
         }
     }
 
-    if (authrizedUser == true) {
+    if (authorizedUser == true) {
         next()
     } else {
         return res.redirect(referer || '/');
