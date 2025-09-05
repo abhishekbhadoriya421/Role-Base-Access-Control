@@ -6,11 +6,11 @@ const { AddUserAction, CreateUserAction, UpdateUserAction, UpdateUserFormAction,
 
 
 Router.get('/add-user', VerifyUserMemebership, AddUserAction);
-Router.get('/update-user-form', UpdateUserFormAction);
-Router.get('/delete-user', DeleteUserAction);
+Router.get('/update-user-form', VerifyUserMemebership, UpdateUserFormAction);
+Router.get('/delete-user', VerifyUserMemebership, DeleteUserAction);
 
 // Post 
-Router.post('/create-user', CreateUserAction);
-Router.post('/update-user', UpdateUserAction);
+Router.post('/create-user', VerifyUserMemebership, CreateUserAction);
+Router.post('/update-user', VerifyUserMemebership, UpdateUserAction);
 
 module.exports = Router

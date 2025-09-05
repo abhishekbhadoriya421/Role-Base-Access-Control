@@ -5,7 +5,11 @@ const Permission = require('../models/Permission.js');
 
 const membershipCache = {};
 const rolePermissionMapCache = {};
+const permissionIdsCaches = {};
 
+/**
+ * Verify the user membership (user allowed to vist the page or not with proper chache mechanism)
+ */
 const VerifyUserMemebership = async (req, res, next) => {
     const referer = req.get("Referer");
     if (!req.cookies || !req.cookies.access_token || !req.cookies.access_token.token) {
@@ -26,12 +30,20 @@ const VerifyUserMemebership = async (req, res, next) => {
     } else {
         role_ids = membershipCache[user_id];
     }
-
+    let permissionObjectId = null
     const requestedUrl = req.baseUrl + req.path;
-    const permissionObjectId = await Permission.findOne({ name: requestedUrl }).select('_id').lean();
-    if (!permissionObjectId) {
-        return res.redirect(referer || '/');
+    if (!permissionIdsCaches[requestedUrl]) {
+        permissionObjectId = await Permission.findOne({ name: requestedUrl }).select('_id').lean();
+        if (!permissionObjectId) {
+            return res.redirect(referer || '/');
+        }
+        permissionIdsCaches[requestedUrl] = permissionObjectId;
+    } else {
+        permissionObjectId = permissionIdsCaches[requestedUrl];
     }
+
+    console.log(permissionObjectId)
+
     let authrizedUser = false;
     for (const roleId of role_ids) {
         if (!rolePermissionMapCache[roleId]) {
