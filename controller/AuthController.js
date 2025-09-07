@@ -9,16 +9,16 @@ module.exports.IndexAction = async (req, res) => {
     return res.status(200).render('auth/index');
 }
 
-module.exports.AddRoleFormAction = async (req, res) => {
-    return res.status(200).render('auth/add-role-form');
-}
 
 module.exports.ViewRolesAction = async (req, res) => {
     const roles = await Role.find().lean();
-
     return res.status(200).render('auth/view-role', {
         'roles': roles
     });
+}
+
+module.exports.AddRoleFormAction = async (req, res) => {
+    return res.status(200).render('auth/add-role-form');
 }
 
 module.exports.CreateRoleAction = async (req, res) => {
@@ -35,6 +35,46 @@ module.exports.CreateRoleAction = async (req, res) => {
         throw new Error(err.toString());
     }
 
+}
+
+module.exports.DeleteRoleAction = async (req, res) => {
+    const { id } = req.body
+    try {
+        await Role.findByIdAndDelete({ '_id': id });
+        console.log('Role Deleted Successfully');
+    } catch (err) {
+        console.log(err);
+    }
+    return res.redirect('/role-permission/view-role');
+}
+
+module.exports.UpdateRoleFormAction = async (req, res) => {
+    const { id } = req.body
+    try {
+        const model = await Role.findOne({ '_id': id });
+        if (!model) {
+            return res.redirect('/role-permission/view-role')
+        }
+        return res.render('auth/update-role-form', {
+            'model': model
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports.UpdateRoleAction = async (req, res) => {
+    const { id, name, description } = req.body;
+    try {
+        const response = await Role.findByIdAndUpdate(
+            id,
+            { 'name': name },
+            { 'description': description }
+        );
+        return res.redirect('/role-permission/view-role')
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 
@@ -96,7 +136,7 @@ module.exports.UpdatePermissionFormAction = async (req, res) => {
 module.exports.UpdatePermissionAction = async (req, res) => {
     const { id, name, description } = req.body;
     try {
-        await Permission.findByIdAndUpdate(
+        const response = await Permission.findByIdAndUpdate(
             id,
             { 'name': name },
             { 'description': description }
