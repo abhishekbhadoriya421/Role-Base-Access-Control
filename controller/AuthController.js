@@ -4,6 +4,11 @@ const Permission = require('../models/Permission.js');
 const LoginUser = require('../models/LoginUser.js');
 const Memberships = require('../models/Memberships.js');
 
+
+module.exports.IndexAction = async (req, res) => {
+    return res.status(200).render('auth/index');
+}
+
 module.exports.AddRoleFormAction = async (req, res) => {
     return res.status(200).render('auth/add-role-form');
 }
@@ -15,12 +20,6 @@ module.exports.ViewRolesAction = async (req, res) => {
         'roles': roles
     });
 }
-
-
-
-
-
-
 
 module.exports.CreateRoleAction = async (req, res) => {
     const { name, description } = req.body

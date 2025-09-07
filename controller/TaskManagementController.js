@@ -39,4 +39,10 @@ exports.CreateTaskAction = async (req, res, next) => {
 }
 
 
-
+exports.EditAction = async (req, res, next) => {
+    console.log(req.id)
+    // const model = await TaskList.find()
+    // return res.render('task-management/edit-form', {
+    //     'model': model
+    // });
+}
