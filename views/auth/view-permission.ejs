@@ -44,8 +44,11 @@
                                     <td>adsf</td>
                                     <td>asdf</td>
                                     <td class="text-center">
-                                        <a href="/role-permission/edit-permission/<%= ele._id %>"
-                                            class="btn btn-sm btn-warning me-2">Edit</a>
+                                        <form action="/role-permission/update-permission-form" method="POST"
+                                            style="display:inline;">
+                                            <input type="hidden" value="<%= ele._id %>" name="id" />
+                                            <button type="submit" class="btn btn-sm btn-warning me-2">Edit</button>
+                                        </form>
                                         <form action="/role-permission/delete-permission" method="POST"
                                             style="display:inline;">
                                             <input type="hidden" value="<%= ele._id %>" name="id" />

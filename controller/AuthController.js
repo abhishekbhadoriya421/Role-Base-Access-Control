@@ -81,17 +81,29 @@ module.exports.DeletePermissionAction = async (req, res) => {
 module.exports.UpdatePermissionFormAction = async (req, res) => {
     const { id } = req.body
     try {
-        const model = await Permission.find({ '_id': id });
+        const model = await Permission.findOne({ '_id': id });
         if (!model) {
-            console.log('Model Not Found');
             return res.redirect('/role-permission/view-permission')
         }
-
-        return res.render('update-permission-form', {
+        return res.render('auth/update-permission-form', {
             'model': model
         });
     } catch (err) {
+        console.log(err);
+    }
+}
 
+module.exports.UpdatePermissionAction = async (req, res) => {
+    const { id, name, description } = req.body;
+    try {
+        await Permission.findByIdAndUpdate(
+            id,
+            { 'name': name },
+            { 'description': description }
+        );
+        return res.redirect('/role-permission/view-permission')
+    } catch (err) {
+        console.log(err);
     }
 }
 
