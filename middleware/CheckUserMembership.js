@@ -73,7 +73,7 @@ const VerifyUserMemebership = async (req, res, next) => {
         if (!permissionId) { console.log("permission model not found"); return res.redirect(referer || '/'); }
         permissionObjectId = await CacheService.setCache(`${requestUrlPrefix}:${requestedUrl}`, permissionId, 3600);
     }
-    console.log(permissionObjectId)
+
     /**
      * check if user is authorized to visit the request page  
      */
@@ -96,11 +96,8 @@ const VerifyUserMemebership = async (req, res, next) => {
         if (!roleAndPermissionMap) {
             const permissions = await RolePermissionMap.distinct('permission_id', { role_id: roleId }).lean();
             let tempPermissions = permissions.map(p => p.toString());
-            console.log("this: ", tempPermissions);
             roleAndPermissionMap = await CacheService.setCache(`${roleIdPrefix}:${roleId}`, tempPermissions, 3600);
         }
-
-        console.log("roleAndPermissionMap: " + roleAndPermissionMap);
         if (roleAndPermissionMap.includes(permissionObjectId._id.toString())) {
             authorizedUser = true;
             break;

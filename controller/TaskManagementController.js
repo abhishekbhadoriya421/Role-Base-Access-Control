@@ -4,7 +4,6 @@ const CoreUser = require('../models/CoreUser.js');
 
 exports.ViewTaskListAction = async (req, res) => {
     const taskList = await TaskList.find().sort({ _id: -1 }).populate('task_assigned_to').lean();
-    // return res.json(taskList);
     return res.status(200).render('task-management/view-task-list', {
         'taskList': taskList
     });
@@ -19,7 +18,7 @@ exports.CreateTaskFormAction = async (req, res) => {
     });
 }
 
-exports.CreateTaskAction = async (req, res) => {
+exports.CreateTaskAction = async (req, res, next) => {
     const { task_name, task_description, task_status, task_priority, task_assigned_to, due_date } = req.body;
 
     const model = new TaskList();
@@ -35,7 +34,7 @@ exports.CreateTaskAction = async (req, res) => {
         req.flash('success_msg', 'Task Has Been Created SuccessFully');
         return res.status(200).redirect('view-task-list');
     } catch (err) {
-
+        throw new Error(err.toString());
     }
 }
 

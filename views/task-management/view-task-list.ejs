@@ -63,7 +63,9 @@
                     <%= task.task_priority %>
                   </td>
                   <td>
-                    <%= task.task_assigned_to.user_name %> (<%= task.task_assigned_to.user_email %>)
+                    <% if(task.task_assigned_to){ %>
+                      <%= task.task_assigned_to.user_name %>
+                        <% } %>
                   </td>
                   <td>
                     <%= new Date(task.due_date).toLocaleDateString() %>
