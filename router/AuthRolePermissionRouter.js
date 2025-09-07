@@ -6,6 +6,7 @@ const { AddRoleFormAction, CreateRoleAction, ViewRolesAction,
 } = require('../controller/AuthController.js');
 
 // Get
+Router.get('/', (req, res) => { res.redirect('index') });
 Router.get('/index', IndexAction);
 Router.get('/add-role-form', AddRoleFormAction);
 Router.get('/view-role', ViewRolesAction);

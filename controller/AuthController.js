@@ -32,7 +32,7 @@ module.exports.CreateRoleAction = async (req, res) => {
         console.log("Saved Successfully");
         return res.redirect('view-role');
     } catch (err) {
-        console.log(err)
+        throw new Error(err.toString());
     }
 
 }
