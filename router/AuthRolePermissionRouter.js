@@ -18,7 +18,10 @@ const {
     UpdatePermissionAction,
     DeleteRoleAction,
     UpdateRoleFormAction,
-    UpdateRoleAction
+    UpdateRoleAction,
+    UpdateRolePermissionMapFormAction,
+    UpdateRolePermissionMapAction,
+    DeleteRolePermissionMapAction
 } = require('../controller/AuthController.js');
 
 // Get
@@ -43,6 +46,9 @@ Router.post('/update-permission', UpdatePermissionAction);
 Router.post('/delete-role', DeleteRoleAction);
 Router.post('/update-role-form', UpdateRoleFormAction);
 Router.post('/update-role', UpdateRoleAction);
+Router.post('/update-role-permission-map-form', UpdateRolePermissionMapFormAction);
+Router.post('/update-role-permissions-map', UpdateRolePermissionMapAction);
+Router.post('/delete-role-permissions-map', DeleteRolePermissionMapAction);
 
 
 

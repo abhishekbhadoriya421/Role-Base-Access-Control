@@ -28,7 +28,10 @@ module.exports.CreateRoleAction = async (req, res) => {
         model.name = name;
         model.description = description;
 
-        await model.save()
+        const response = await model.save();
+        if (!response) {
+            console.log('Model Not Saved');
+        }
         console.log("Saved Successfully");
         return res.redirect('view-role');
     } catch (err) {
@@ -40,7 +43,10 @@ module.exports.CreateRoleAction = async (req, res) => {
 module.exports.DeleteRoleAction = async (req, res) => {
     const { id } = req.body
     try {
-        await Role.findByIdAndDelete({ '_id': id });
+        const response = await Role.findByIdAndDelete({ '_id': id });
+        if (!response) {
+            console.log('Model Not Deleted');
+        }
         console.log('Role Deleted Successfully');
     } catch (err) {
         console.log(err);
@@ -68,9 +74,12 @@ module.exports.UpdateRoleAction = async (req, res) => {
     try {
         const response = await Role.findByIdAndUpdate(
             id,
-            { 'name': name },
-            { 'description': description }
+            { 'name': name, 'description': description },
+            { new: true, runValidators: true }
         );
+        if (!response) {
+            console.log('Model Not Updated');
+        }
         return res.redirect('/role-permission/view-role')
     } catch (err) {
         console.log(err);
@@ -97,7 +106,10 @@ module.exports.CreatePermissionAction = async (req, res) => {
         const model = new Permission();
         model.name = name;
         model.description = description;
-        await model.save()
+        const response = await model.save();
+        if (!response) {
+            console.log('Model Not Saved');
+        }
         console.log("Saved Successfully");
         return res.redirect('view-permission');
     } catch (err) {
@@ -109,7 +121,10 @@ module.exports.CreatePermissionAction = async (req, res) => {
 module.exports.DeletePermissionAction = async (req, res) => {
     const { id } = req.body
     try {
-        await Permission.findByIdAndDelete({ '_id': id });
+        const response = await Permission.findByIdAndDelete({ '_id': id });
+        if (!response) {
+            console.log('Model Not Delete');
+        }
         console.log('Deleted Successfully');
     } catch (err) {
         console.log(err);
@@ -138,9 +153,12 @@ module.exports.UpdatePermissionAction = async (req, res) => {
     try {
         const response = await Permission.findByIdAndUpdate(
             id,
-            { 'name': name },
-            { 'description': description }
+            { 'name': name, 'description': description },
+            { new: true, runValidators: true }
         );
+        if (!response) {
+            console.log('Model Not Updated');
+        }
         return res.redirect('/role-permission/view-permission')
     } catch (err) {
         console.log(err);
@@ -164,7 +182,10 @@ module.exports.CreateRoleMapAction = async (req, res) => {
 
         model.permission_id = permission_id
         model.role_id = role_id
-        await model.save()
+        const response = await model.save();
+        if (!response) {
+            console.log('Model Not Saved');
+        }
         console.log('Role Map Saved Successfully');
         return res.status(200).redirect('view-role-permission-map')
     } catch (err) {
@@ -180,6 +201,61 @@ module.exports.ViewRolePermissionMapAction = async (req, res) => {
     });
 }
 
+module.exports.UpdateRolePermissionMapFormAction = async (req, res) => {
+    const { id } = req.body
+    try {
+        const model = await RolePermissionMap.findOne({ '_id': id });
+        const roles = await Role.find().lean();
+        const permission = await Permission.find().lean();
+        if (!model) {
+            return res.redirect('/role-permission/view-role-permission-map')
+        }
+
+        return res.render('auth/update-role-permission-map-form', {
+            'model': model,
+            'roles': roles,
+            'permissions': permission
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports.UpdateRolePermissionMapAction = async (req, res) => {
+    const { permission_id, role_id, id } = req.body
+    try {
+        const response = await RolePermissionMap.findByIdAndUpdate(
+            id,
+            {
+                'permission_id': permission_id,
+                'role_id': role_id
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!response) {
+            console.log('Model Not Found');
+        }
+        return res.redirect('/role-permission/view-role-permission-map');
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+
+module.exports.DeleteRolePermissionMapAction = async (req, res) => {
+    const { id } = req.body;
+    try {
+        const response = await RolePermissionMap.findByIdAndDelete({ '_id': id });
+        if (!response) {
+            console.log('Model Not Found');
+        }
+        return res.redirect('/role-permission/view-role-permission-map')
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 module.exports.AssignUserRoleFormAction = async (req, res) => {
     const roles = await Role.find().lean();

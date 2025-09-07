@@ -49,10 +49,14 @@
                                             <%= rp.updatedAt ? rp.updatedAt.toLocaleDateString() : '-' %>
                                         </td>
                                         <td class="text-center">
-                                            <a href="/role-permissions/edit/<%= rp._id %>"
-                                                class="btn btn-sm btn-warning me-2">Edit</a>
-                                            <form action="/role-permissions/delete/<%= rp._id %>" method="POST"
+                                            <form action="/role-permission/update-role-permission-map-form"
+                                                method="POST" style="display:inline;">
+                                                <input type="hidden" value="<%= rp._id %>" name="id" />
+                                                <button type="submit" class="btn btn-sm btn-warning me-2">Edit</button>
+                                            </form>
+                                            <form action="/role-permission/delete-role-permissions-map" method="POST"
                                                 style="display:inline;">
+                                                <input type="hidden" value="<%= rp._id %>" name="id" />
                                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                             </form>
                                         </td>

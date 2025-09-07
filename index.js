@@ -46,9 +46,9 @@ app.use((req, res, next) => {
     return res.render('pageNotFound');
 });
 
-app.use((err, req, res, next) => {
-    return res.render('errorpage');
-});
+// app.use((err, req, res, next) => {
+//     return res.render('errorpage');
+// });
 
 (async () => {
     await connectRedis()
