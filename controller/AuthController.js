@@ -38,18 +38,18 @@ module.exports.CreateRoleAction = async (req, res) => {
 }
 
 
-module.exports.AddPermissionForm = async (req, res) => {
-    return res.status(200).render('auth/add-permission-form');
-}
-
 module.exports.ViewPermissionAction = async (req, res) => {
-    const roles = await Permission.find().lean();
+    const permission = await Permission.find().lean();
 
-    return res.status(200).render('auth/view-role', {
-        'roles': roles
+    return res.status(200).render('auth/view-permission', {
+        'permission': permission
     });
 }
 
+
+module.exports.AddPermissionForm = async (req, res) => {
+    return res.status(200).render('auth/add-permission-form');
+}
 
 module.exports.CreatePermissionAction = async (req, res) => {
     const { name, description } = req.body
@@ -66,6 +66,34 @@ module.exports.CreatePermissionAction = async (req, res) => {
 
 }
 
+module.exports.DeletePermissionAction = async (req, res) => {
+    const { id } = req.body
+    try {
+        await Permission.findByIdAndDelete({ '_id': id });
+        console.log('Deleted Successfully');
+    } catch (err) {
+        console.log(err);
+    }
+    return res.redirect('/role-permission/view-permission');
+}
+
+
+module.exports.UpdatePermissionFormAction = async (req, res) => {
+    const { id } = req.body
+    try {
+        const model = await Permission.find({ '_id': id });
+        if (!model) {
+            console.log('Model Not Found');
+            return res.redirect('/role-permission/view-permission')
+        }
+
+        return res.render('update-permission-form', {
+            'model': model
+        });
+    } catch (err) {
+
+    }
+}
 
 module.exports.RoleMapAction = async (req, res) => {
     const roles = await Role.find().lean();
